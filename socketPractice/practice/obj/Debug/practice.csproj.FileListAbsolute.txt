@@ -1,0 +1,11 @@
+C:\Users\yoo\Desktop\practice\practice\bin\Debug\practice.exe.config
+C:\Users\yoo\Desktop\practice\practice\bin\Debug\practice.exe
+C:\Users\yoo\Desktop\practice\practice\bin\Debug\practice.pdb
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.csprojResolveAssemblyReference.cache
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.frmMain.resources
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.Properties.Resources.resources
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.csproj.GenerateResource.Cache
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.exe
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.pdb
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.frmServer.resources
+C:\Users\yoo\Desktop\practice\practice\obj\Debug\practice.frmClient.resources
