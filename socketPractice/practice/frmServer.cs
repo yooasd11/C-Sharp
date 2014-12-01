@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -17,13 +18,15 @@ namespace practice
     {
         int _port;
         TcpClient _server = null;
-        List<TcpClient> _client = new List<TcpClient>();
-        Thread _listenerTread;
+        List<TcpClient> _clients = new List<TcpClient>();
+        Thread _waiterThread;
+        Thread _listenerThread;
+        TcpListener listener;
 
-        private void ClientWaiter()
+        private void clientWaiter()
         {
             if (_port < 0) return;
-            var listener = new TcpListener(_port);
+            listener = new TcpListener(_port);
             listener.Start();
             while (true)
             {
@@ -32,16 +35,42 @@ namespace practice
                     ((IPEndPoint)tmpClient.Client.RemoteEndPoint).Address.ToString() +
                     " connected\n";
                 richbxLog.AppendText(connectedMsg);
-                _client.Add(tmpClient);
+                _clients.Add(tmpClient);
             }
         }
 
-        private void MsgCaster()
+        private void sendMsgToClient(TcpClient client, string msg)
         {
-            foreach (var client in _client)
+            var writer = new StreamWriter(client.GetStream());
+            writer.WriteLine(msg);
+            writer.Flush();
+        }
+
+        private string receiveMsgFromClient(TcpClient client)
+        {
+            var reader = new StreamReader(client.GetStream());
+            return reader.ReadLine();
+        }
+
+        private void msgController()
+        {
+            List<string> listMsg = new List<string>();
+            foreach (TcpClient client in _clients)
             {
-                
+                string msg = receiveMsgFromClient(client);
+                richbxLog.AppendText(msg + '\n');
+                listMsg.Add(msg);
             }
+
+            foreach (string msg in listMsg)
+            {
+                foreach (TcpClient client in _clients)
+                {
+                    sendMsgToClient(client, msg);
+                }
+            }
+
+            listMsg.Clear();
         }
 
         public frmServer()
@@ -56,8 +85,10 @@ namespace practice
             InitializeComponent();
             _port = port;
             txtbxPort.Text = _port.ToString();
-            _listenerTread = new Thread(ClientWaiter);
-            _listenerTread.Start();
+            _waiterThread = new Thread(clientWaiter);
+            _waiterThread.Start();
+            _listenerThread = new Thread(msgController);
+            _listenerThread.Start();
         }
 
         private void frmServer_Load(object sender, EventArgs e)
